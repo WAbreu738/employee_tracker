@@ -202,7 +202,12 @@ async function updateEmployeeRole() {
 // Displays all roles within the database
 async function viewAllRoles() {
     try {
-        const results = await client.query('SELECT * FROM role')
+        const roleQuery = `
+            SELECT role.id, role.title, department.name AS department_name, role.salary 
+            FROM role
+            JOIN department ON role.department_id = department.id
+        `
+        const results = await client.query(roleQuery)
         console.table(results.rows)
         await init()
     } catch (error) {
@@ -258,6 +263,7 @@ async function viewAllDepartments() {
     try {
         const results = await client.query('SELECT * FROM department')
         console.table(results.rows)
+        await init()
     } catch (error) {
         console.log(err)
     }
