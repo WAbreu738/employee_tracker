@@ -1,5 +1,5 @@
-const inquirer = require('inquirer')
 require('console.table')
+const inquirer = require('inquirer')
 
 
 const { Client } = require('pg')
@@ -11,8 +11,10 @@ const client = new Client({
     port: 5432
 })
 
+//Connect to PostgreSQL database
 client.connect() 
 
+//Displays the main menu and handles user selection
 async function init() {
     try {
         const prompt = await inquirer.prompt({
@@ -78,6 +80,7 @@ async function init() {
 
 async function viewAllEmployees() {
     try {
+        //Inserts Role Names and Manager Names into the table
         const query = `
             SELECT 
                 employee.id, 
@@ -98,7 +101,7 @@ async function viewAllEmployees() {
     }
 }
 
-
+//Adds a new employee to the database
 async function addEmployee() {
     try {
         const roleQuery = await client.query("SELECT id, title FROM role");
@@ -113,6 +116,7 @@ async function addEmployee() {
             name: `${employee.first_name} ${employee.last_name}`
         }))
 
+        // Prompts the user for details about the employee
         const answers = await inquirer.prompt([
             {
                 type: 'input',
@@ -138,6 +142,7 @@ async function addEmployee() {
             }
         ])
 
+        //Insert new employee
         await client.query(
             "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)",
             [answers.first_name, answers.last_name, answers.role_id, answers.manager_id]
@@ -150,6 +155,7 @@ async function addEmployee() {
     }
 }
 
+// Updates an employee's role in the database
 async function updateEmployeeRole() {
     try {
         const employeeQuery = await client.query("SELECT id, first_name, last_name FROM employee");
@@ -164,6 +170,7 @@ async function updateEmployeeRole() {
             name: role.title
         }))
 
+        // Prompt User to select an employee and update their role
         const answers = await inquirer.prompt([
             {
                 type: 'list',
@@ -179,6 +186,7 @@ async function updateEmployeeRole() {
             }
         ])
 
+        //Update's role
         await client.query(
             "UPDATE employee SET role_id = $1 WHERE id = $2",
             [answers.role_id, answers.employee_id]
@@ -191,6 +199,7 @@ async function updateEmployeeRole() {
     }
 }
 
+// Displays all roles within the database
 async function viewAllRoles() {
     try {
         const results = await client.query('SELECT * FROM role')
@@ -201,17 +210,17 @@ async function viewAllRoles() {
     }
 }
 
-//DOUBLE CHECK
+// Adds new role to the database
 async function addRole() {
     try {
-        // Fetch department choices to display in the prompt
+       
         const departmentQuery = await client.query("SELECT id, name FROM department");
         const departmentChoices = departmentQuery.rows.map(department => ({
             value: department.id,
             name: department.name
         }))
 
-        // Prompt user for role details
+        // Prompts the user for role details
         const answers = await inquirer.prompt([
             {
                 type: 'input',
@@ -231,7 +240,7 @@ async function addRole() {
             }
         ])
 
-        // Insert the new role into the database
+        // Insert new role
         await client.query(
             "INSERT INTO role (title, salary, department_id) VALUES ($1, $2, $3)",
             [answers.title, answers.salary, answers.department_id]
@@ -244,6 +253,7 @@ async function addRole() {
     }
 }
 
+// Displays all roles within the database
 async function viewAllDepartments() {
     try {
         const results = await client.query('SELECT * FROM department')
@@ -253,7 +263,7 @@ async function viewAllDepartments() {
     }
 }
 
-//DOUBLE CHECK
+// Adds a new department to the database
 async function addDepartment() {
     try {
         const answer = await inquirer.prompt([
@@ -263,6 +273,8 @@ async function addDepartment() {
                 message: 'What is the name of the department?',
             }
         ])
+
+        // Insert new department
         await client.query(
             "INSERT INTO department (name) VALUES ($1)",
             [answer.department_name]
