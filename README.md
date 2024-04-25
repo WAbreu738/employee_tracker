@@ -21,7 +21,7 @@
 
   ## Usage
   1. Run Application : With in the terminal npm start 
-  2. Navigate the menu using the arrow keys and press enter on the desired option. 
+  2. Navigate the menu using the arrow keys and press enter on the desired option.
 
   ## Features
   - View all employees: Displays a table of all employees with their roles and managers.
@@ -32,6 +32,9 @@
   - View all departments: Displays a table of all departments.
   - Add department: Enables the user to add a new department to the database.
 
+  ## Video
+  (https://drive.google.com/file/d/1-B4NRZxdOx9uAlzNbUp9G86aK3oNCO9C/view?usp=drive_link)
+  
   ## License 
   ![GitHub license](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
